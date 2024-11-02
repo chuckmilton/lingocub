@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LingoCub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 320px;
+      padding: 20px;
+      background-color: #f4f6f9;
+      display: flex;
+      justify-content: center;
+    }
+
+    #container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #333;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #status-container {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e9ecef;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-align: center;
+      color: #333;
+    }
+
+    #status-text {
+      font-weight: bold;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h2>Welcome to LingoCub!</h2>
+
+    <label for="apiKey">Enter your ElevenLabs API Key:</label>
+    <input type="text" id="apiKey" placeholder="Your API Key" />
+
+    <label for="sourceLanguage">Select Source Language:</label>
+    <select id="sourceLanguage">
+      <option value="auto">Auto Detect</option>
+      <option value="en">English</option>
+      <option value="es">Spanish</option>
+      <option value="fr">French</option>
+      <option value="zh">Chinese</option>
+      <!-- Add more source languages as needed -->
+    </select>
+
+    <label for="targetLanguage">Select Target Language:</label>
+    <select id="targetLanguage">
+      <option value="en">English</option>
+      <option value="es">Spanish</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+      <option value="ko">Korean</option>
+    </select>
+
+    <label for="numSpeakers">Number of Speakers:</label>
+    <select id="numSpeakers">
+        <option value="0">Auto Detect</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+    </select>
+
+    <button id="startDubbing">Start Dubbing</button>
+
+    <div id="status-container">
+      <span id="status-text">Status: Not started</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

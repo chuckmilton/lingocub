@@ -1,0 +1,40 @@
+# Node.js dependencies (if you're using npm or yarn for package management)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Local development files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Chrome Extension build artifacts
+dist/
+build/
+*.zip
+
+# Compiled or minified files
+*.min.js
+*.min.css
+
+# Environment variables and API keys
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# OS generated files
+*.DS_Store
+*.vscode/
+*.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Sensitive user data (such as cached tokens)
+chrome-user-data/
