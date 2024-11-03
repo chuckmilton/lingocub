@@ -4,7 +4,6 @@ LingoCub is a Chrome extension that enables real-time dubbing for YouTube videos
 ### Features
 - Real-Time Dubbing: Dub YouTube videos in real time into your preferred language.
 - Customizable Settings: Choose your source language, target language, and specify the number of speakers for optimal dubbing.
-- Automatic Detection: Automatically detects when a new video is loaded and applies the dubbing settings without needing to reload the page.
 - Audio Synchronization: Synchronizes dubbed audio with YouTube's video playback for a seamless experience.
 ### Installation
 1. #### Clone the Repository:
@@ -37,3 +36,25 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ----
 This README.md provides a comprehensive overview of LingoCub and should help users and contributors understand how to install and use the project.
+
+### Disclaimer
+#### Disclaimer for LingoCub
+
+#### Content Usage
+LingoCub is an unofficial tool designed to enhance YouTube video experiences by dubbing videos in real-time using the ElevenLabs API. LingoCub does not own or control YouTube or its content. Users are responsible for ensuring they have the right to alter or overlay audio on any video they view or use with this tool.
+
+#### Third-Party API Integration
+This app relies on the ElevenLabs API for audio generation, and all dubbed audio is generated based on information provided by ElevenLabs. Users are responsible for reviewing ElevenLabs’ privacy policy and terms of service, as data used for dubbing is managed by ElevenLabs and may be subject to its data handling policies.
+
+#### Data Collection
+LingoCub stores your API key locally and does not transmit it to third parties. Any data related to video URLs, language preferences, and dubbing requests is used solely for in-app functionality and is not stored or retained by LingoCub after usage.
+
+#### Limitations and Errors
+LingoCub’s performance may vary depending on YouTube’s restrictions, API limitations, or connection issues. We do not guarantee continuous functionality due to potential API updates, server limitations, or other service changes by YouTube or ElevenLabs.
+
+#### Privacy and Security
+By using this extension, users acknowledge and accept any associated risks, including potential disruptions in YouTube or ElevenLabs functionality. LingoCub is designed with user privacy in mind but cannot guarantee the privacy practices of third-party services or external links accessed through YouTube.
+
+#### Non-Endorsement
+This application is not endorsed or affiliated with YouTube, Google, or ElevenLabs. All trademarks and copyrights belong to their respective owners.
+
