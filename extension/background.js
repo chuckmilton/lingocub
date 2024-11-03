@@ -15,11 +15,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 return;
             }
 
-            // If there is a previous dubbing ID, delete it
+            // Delete previous dubbing if it exists
             if (previousDubbingId) {
                 deletePreviousDubbing(previousDubbingId, apiKey)
                     .then(() => {
-                        chrome.storage.local.remove("previousDubbingId"); // Remove from storage after successful deletion
+                        chrome.storage.local.remove("previousDubbingId"); // Clear previous ID after deletion
                         startDubbing(videoUrl, apiKey, sourceLanguage, targetLanguage, numSpeakers, tabId);
                     })
                     .catch((error) => {
@@ -50,10 +50,11 @@ function deletePreviousDubbing(dubbingId, apiKey) {
     })
     .catch((error) => {
         console.error(`Error during deletion of dubbing ID ${dubbingId}:`, error);
-        throw error; // Ensure any deletion errors propagate
+        throw error; // Propagate error
     });
 }
 
+// Function to start dubbing
 function startDubbing(sourceUrl, apiKey, sourceLanguage, targetLanguage, numSpeakers, tabId) {
     const formData = new FormData();
     formData.append("source_url", sourceUrl);
@@ -89,6 +90,7 @@ function startDubbing(sourceUrl, apiKey, sourceLanguage, targetLanguage, numSpea
     });
 }
 
+// Function to check dubbing status
 function checkDubbingStatus(dubbingId, apiKey, targetLanguage, tabId) {
     const interval = setInterval(() => {
         fetch(`https://api.elevenlabs.io/v1/dubbing/${dubbingId}`, {
@@ -121,10 +123,11 @@ function checkDubbingStatus(dubbingId, apiKey, targetLanguage, tabId) {
                 message: "An error occurred while checking dubbing status."
             });
         });
-    }, 1000); // Check every 5 seconds
+    }, 1000); // Check every second
 }
 
+// Function to fetch dubbed audio
 function fetchDubbedAudio(dubbingId, languageCode, apiKey, tabId) {
-    const proxyUrl = `https://lingocub.vercel.app/api/dubbed-audio?dubbingId=${dubbingId}&languageCode=${languageCode}&apiKey=${apiKey}`;
+    const proxyUrl = `https://lingocub.vercel.app/api/server?dubbingId=${dubbingId}&languageCode=${languageCode}&apiKey=${apiKey}`;
     chrome.tabs.sendMessage(tabId, { command: "playDubbedAudio", audioUrl: proxyUrl });
 }
