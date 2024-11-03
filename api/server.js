@@ -1,5 +1,17 @@
 // api/dubbed-audio.js
+
 export default async function handler(req, res) {
+  // Allow CORS from any origin
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+      res.status(200).end();
+      return;
+  }
+
   const { dubbingId, languageCode, apiKey } = req.query;
 
   const url = `https://api.elevenlabs.io/v1/dubbing/${dubbingId}/audio/${languageCode}`;
@@ -13,7 +25,6 @@ export default async function handler(req, res) {
           const arrayBuffer = await response.arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
 
-          res.setHeader('Access-Control-Allow-Origin', '*');
           res.setHeader('Content-Type', 'audio/mpeg');
           res.send(buffer);
       } else {
