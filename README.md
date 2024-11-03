@@ -31,12 +31,6 @@ LingoCub is a Chrome extension that enables real-time dubbing for YouTube videos
 4. Click **Start Dubbing**.
 5. **Dubbing Status** will display in the popup, and dubbed audio will play along with the video, with the original audio muted.
 
-### License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-----
-This README.md provides a comprehensive overview of LingoCub and should help users and contributors understand how to install and use the project.
-
 ### Disclaimer
 #### Disclaimer for LingoCub
 
