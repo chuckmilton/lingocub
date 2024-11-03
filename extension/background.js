@@ -125,6 +125,6 @@ function checkDubbingStatus(dubbingId, apiKey, targetLanguage, tabId) {
 }
 
 function fetchDubbedAudio(dubbingId, languageCode, apiKey, tabId) {
-    const proxyUrl = `http://localhost:3000/dubbed-audio?dubbingId=${dubbingId}&languageCode=${languageCode}&apiKey=${apiKey}`;
+    const proxyUrl = `https://lingocub.vercel.app/api/dubbed-audio?dubbingId=${dubbingId}&languageCode=${languageCode}&apiKey=${apiKey}`;
     chrome.tabs.sendMessage(tabId, { command: "playDubbedAudio", audioUrl: proxyUrl });
 }
