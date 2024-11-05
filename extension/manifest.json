@@ -3,13 +3,13 @@
     "name": "LingoCub",
     "version": "1.0",
     "description": "Dub YouTube videos in real-time using ElevenLabs API.",
-    "permissions": ["storage", "tabs", "activeTab", "scripting"],
+    "permissions": ["storage", "tabs", "activeTab"],
     "background": {
       "service_worker": "background.js"
     },
     "content_scripts": [
       {
-        "matches": ["*://*.youtube.com/*"],
+        "matches": ["*://*.youtube.com/*", "*://*.instructure.com/*", "*://*.zoom.us/*"],
         "js": ["content.js"]
       }
     ],
