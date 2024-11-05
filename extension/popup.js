@@ -14,27 +14,25 @@ function animateDots(statusElement) {
 function updateStatus(status) {
     const statusElement = document.getElementById("status-text");
 
-    // Stop the dot animation if status is not "Dubbing"
     if (dotInterval && status.toLowerCase() !== "dubbing") {
         clearInterval(dotInterval);
-        dotInterval = null; // Ensure dotInterval is reset
+        dotInterval = null; 
     }
 
-    // Start the dot animation if status is "Dubbing"
     if (status.toLowerCase() === "dubbing") {
         animateDots(statusElement);
     } else {
-        // Set the status text and capitalize the first letter
         statusElement.textContent = `Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
     }
     
-    // Remove existing status classes
     statusElement.classList.remove("status-default", "status-dubbed", "status-in-progress", "status-error");
-    
-    // Add the appropriate class based on the status
+
     switch (status.toLowerCase()) {
       case "dubbed":
         statusElement.classList.add("status-dubbed");
+        // Set the toggle to enabled when dubbing completes
+        document.getElementById("dubbedAudioToggle").checked = true;
+        chrome.storage.local.set({ audioToggleState: true });
         break;
       case "in progress":
         statusElement.classList.add("status-in-progress");
@@ -45,53 +43,58 @@ function updateStatus(status) {
       default:
         statusElement.classList.add("status-default");
     }
-  }
-  
-  // Load saved API key, target language, and status when popup opens
-  document.addEventListener("DOMContentLoaded", () => {
+}
+
+// Load saved settings
+document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.get(
-      ["apiKey", "sourceLanguage", "targetLanguage", "numSpeakers", "dubbingStatus"],
+      ["apiKey", "sourceLanguage", "targetLanguage", "numSpeakers", "dubbingStatus", "audioToggleState"],
       (data) => {
         if (data.apiKey) document.getElementById("apiKey").value = data.apiKey;
         if (data.sourceLanguage) document.getElementById("sourceLanguage").value = data.sourceLanguage;
         if (data.targetLanguage) document.getElementById("targetLanguage").value = data.targetLanguage;
         if (data.numSpeakers !== undefined) document.getElementById("numSpeakers").value = data.numSpeakers;
-        
-        // Show saved status if available
+
         const initialStatus = data.dubbingStatus ? data.dubbingStatus : "Not started";
         updateStatus(initialStatus);
+
+        document.getElementById("dubbedAudioToggle").checked = data.audioToggleState !== false;
       }
     );
-  });
-  
-  // Event listener for "Start Dubbing" button
-  document.getElementById("startDubbing").addEventListener("click", () => {
+});
+
+// Toggle switch listener
+document.getElementById("dubbedAudioToggle").addEventListener("change", (event) => {
+    const isDubbedOn = event.target.checked;
+    chrome.storage.local.set({ audioToggleState: isDubbedOn });
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { command: "toggleAudio", dubbed: isDubbedOn });
+    });
+});
+
+// Event listener for "Start Dubbing" button
+document.getElementById("startDubbing").addEventListener("click", () => {
     const apiKey = document.getElementById("apiKey").value.trim();
     const sourceLanguage = document.getElementById("sourceLanguage").value;
     const targetLanguage = document.getElementById("targetLanguage").value;
     const numSpeakers = parseInt(document.getElementById("numSpeakers").value) || 0;
-  
+
     if (!apiKey) {
       alert("Please enter your ElevenLabs API key.");
       return;
     }
-  
-    // Validate API key and then save settings before starting dubbing
+
     validateApiKey(apiKey, (isValid) => {
       if (isValid) {
-        chrome.storage.local.set({ apiKey, sourceLanguage, targetLanguage, numSpeakers }, () => {
-        });
-  
-        // Get the current active YouTube tab
+        chrome.storage.local.set({ apiKey, sourceLanguage, targetLanguage, numSpeakers }, () => {});
+
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const activeTab = tabs[0];
           const url = activeTab.url;
-  
+
           if (url && url.includes("youtube.com/watch")) {
-            // Update status to "In Progress"
             updateStatus("In Progress");
-  
-            // Start dubbing and update status
+
             chrome.runtime.sendMessage(
               {
                 command: "startDubbing",
@@ -118,21 +121,18 @@ function updateStatus(status) {
         alert("Invalid API key. Please check and try again.");
       }
     });
-  });
-  
-  // Function to validate the API key
-  function validateApiKey(apiKey, callback) {
+});
+
+function validateApiKey(apiKey, callback) {
     fetch("https://api.elevenlabs.io/v1/user", {
       headers: { "xi-api-key": apiKey },
     })
       .then((response) => callback(response.ok))
       .catch(() => callback(false));
-  }
-  
-  // Listen for status updates from the background script
-  chrome.runtime.onMessage.addListener((message) => {
+}
+
+chrome.runtime.onMessage.addListener((message) => {
     if (message.command === "updateStatus") {
       updateStatus(message.status);
     }
-  });
-  
+});

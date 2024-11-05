@@ -1,11 +1,14 @@
 // content.js
 
+let isDubbedOn = true; // Default to dubbed audio on
+let dubbedAudio; // Declare dubbedAudio globally to manage its state
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  
+    const videoElement = document.querySelector("video");
+
     if (message.command === "showAlert") {
         alert(message.message);
     } else if (message.command === "playDubbedAudio") {
-        const videoElement = document.querySelector("video");
         if (!videoElement) {
             console.warn("No video element found on the page.");
             alert("No video element found.");
@@ -13,7 +16,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
 
         // Check if there is an existing audio element and remove it properly
-        let dubbedAudio = document.getElementById("dubbedAudio");
         if (dubbedAudio) {
             dubbedAudio.pause();
             dubbedAudio.src = ""; // Clear the audio source to stop any ongoing playback
@@ -27,11 +29,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         dubbedAudio.crossOrigin = "anonymous";
         dubbedAudio.style.display = "none";
         document.body.appendChild(dubbedAudio);
+
         // Fetch the audio file from the proxy URL
         fetch(message.audioUrl)
             .then((response) => response.blob())
             .then((blob) => {
                 dubbedAudio.src = URL.createObjectURL(blob);
+
                 // Sync the dubbed audio with the video playback
                 const syncAudio = () => {
                     const offset = videoElement.currentTime - dubbedAudio.currentTime;
@@ -40,10 +44,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     }
                 };
 
+                // Attach event listeners to control dubbed audio based on video state
                 videoElement.addEventListener("play", () => {
-                    dubbedAudio.play().catch((error) => {
-                        console.error("Error playing dubbed audio on video play:", error);
-                    });
+                    if (isDubbedOn) {
+                        dubbedAudio.play().catch((error) => {
+                            console.error("Error playing dubbed audio on video play:", error);
+                        });
+                    }
                 });
 
                 videoElement.addEventListener("pause", () => {
@@ -51,26 +58,49 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 });
 
                 videoElement.addEventListener("timeupdate", syncAudio);
+
                 videoElement.addEventListener("ratechange", () => {
                     dubbedAudio.playbackRate = videoElement.playbackRate;
                 });
 
-                // Set the video volume to 0 initially and ensure it remains muted
-                videoElement.volume = 0;
-                const muteInterval = setInterval(() => {
-                    if (videoElement.volume !== 0) {
-                        videoElement.volume = 0;
+                videoElement.addEventListener("seeked", () => {
+                    if (isDubbedOn && !videoElement.paused) {
+                        dubbedAudio.play();
+                    } else {
+                        dubbedAudio.pause();
                     }
-                }, 100);
+                });
 
-                // Clear the interval if the user leaves the page
-                window.addEventListener("beforeunload", () => {
-                    clearInterval(muteInterval);
+                // Initialize audio based on the saved toggle state but don't auto-play
+                chrome.storage.local.get("audioToggleState", (data) => {
+                    isDubbedOn = data.audioToggleState !== false;
+                    toggleAudio(isDubbedOn, false); // Pass false to prevent auto-play on load
                 });
             })
             .catch((error) => {
                 console.error("Error fetching dubbed audio in content script:", error);
                 alert("An error occurred while fetching the dubbed audio.");
             });
+    } else if (message.command === "toggleAudio") {
+        toggleAudio(message.dubbed);
     }
 });
+
+// Function to toggle between dubbed and original audio
+function toggleAudio(isDubbed, playImmediately = true) {
+    const videoElement = document.querySelector("video");
+
+    isDubbedOn = isDubbed; // Update the global state
+
+    if (isDubbed) {
+        videoElement.volume = 0;
+        if (dubbedAudio && playImmediately && !videoElement.paused) {
+            dubbedAudio.play();
+        }
+    } else {
+        if (dubbedAudio) {
+            dubbedAudio.pause();
+        }
+        videoElement.volume = 1;
+    }
+}
