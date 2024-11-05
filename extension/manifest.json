@@ -9,7 +9,7 @@
     },
     "content_scripts": [
       {
-        "matches": ["*://*.youtube.com/*", "*://*.instructure.com/*", "*://*.zoom.us/*"],
+        "matches": ["*://*.youtube.com/*"],
         "js": ["content.js"]
       }
     ],

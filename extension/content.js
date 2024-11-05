@@ -5,25 +5,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.command === "showAlert") {
         alert(message.message);
     } else if (message.command === "playDubbedAudio") {
-        let videoElement;
-
-        // 1. Check if there is a Zoom video (based on a specific class and id)
-        videoElement = document.querySelector("video.vjs-tech"); // Zoom's video class
-        
-        if (!videoElement) {
-            // 2. Check if there is a Canvas video (typically inside an iframe on Canvas)
-            const iframeElement = document.querySelector("iframe");
-            if (iframeElement && iframeElement.src) {
-                videoElement = iframeElement; // If found, use the iframe for the video URL
-            }
-        }
-
-        // 3. Fallback to standard video element detection if no specific platform element is found
-        if (!videoElement) {
-            videoElement = document.querySelector("video");
-        }
-
-        // If no video element is found, display an alert
+        const videoElement = document.querySelector("video");
         if (!videoElement) {
             console.warn("No video element found on the page.");
             alert("No video element found.");

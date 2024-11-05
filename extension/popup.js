@@ -87,18 +87,20 @@ function updateStatus(status) {
           const activeTab = tabs[0];
           const url = activeTab.url;
   
-          if (isSupportedPlatform(url)) {
+          if (url && url.includes("youtube.com/watch")) {
+            // Update status to "In Progress"
             updateStatus("In Progress");
-
+  
+            // Start dubbing and update status
             chrome.runtime.sendMessage(
-                {
-                    command: "startDubbing",
-                    videoUrl: url,
-                    tabId: activeTab.id,
-                    sourceLanguage,
-                    targetLanguage,
-                    numSpeakers,
-                },
+              {
+                command: "startDubbing",
+                videoUrl: url,
+                tabId: activeTab.id,
+                sourceLanguage,
+                targetLanguage,
+                numSpeakers,
+              },
               (response) => {
                 if (response && response.success) {
                 } else {
@@ -126,14 +128,6 @@ function updateStatus(status) {
       .then((response) => callback(response.ok))
       .catch(() => callback(false));
   }
-  
-  function isSupportedPlatform(url) {
-    return (
-        url.includes("youtube.com/watch") ||
-        url.includes("canvas") ||
-        url.includes("zoom")
-    );
-}
   
   // Listen for status updates from the background script
   chrome.runtime.onMessage.addListener((message) => {
