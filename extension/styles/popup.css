@@ -31,6 +31,13 @@ body {
   justify-content: center;
   align-items: center;
 }
+/* styles.css */
+body {
+  width: 400px;
+  height: 760px;
+  overflow-y: auto;
+}
+
 
 #container {
   padding: 25px 30px;
@@ -149,6 +156,68 @@ select:focus {
   button {
     font-size: 15px;
   }
+}
+
+/* Toggle Switch Container */
+#dubbedAudioToggle-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  background-color: var(--border-color);
+  border-radius: 15px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.toggle-switch::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: var(--secondary-color);
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+/* Custom Checkbox Appearance */
+.custom-checkbox {
+  display: none;
+}
+
+.custom-checkbox:checked + .toggle-switch {
+  background-color: var(--primary-color);
+}
+
+.custom-checkbox:checked + .toggle-switch::before {
+  transform: translateX(20px);
+}
+
+/* Checkmark Symbol */
+.custom-checkbox:checked + .toggle-switch::after {
+  content: "";
+  position: absolute;
+  color: var(--secondary-color);
+  font-size: 12px;
+  top: 3px;
+  right: 6px;
+}
+
+/* Toggle Label Style */
+.toggle-label {
+  font-size: 15px;
+  color: var(--label-color);
+  font-weight: 500;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
 #disclaimer {
